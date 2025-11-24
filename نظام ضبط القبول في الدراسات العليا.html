@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام قوائم فحص الدراسات العليا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            background: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            height: 20px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--success-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+            text-align: center;
+            color: white;
+            font-size: 0.8rem;
+            line-height: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .stage-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border-right: 5px solid var(--secondary-color);
+        }
+
+        .stage-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #eef5fa;
+            transform: translateX(-5px);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-left: 15px;
+            accent-color: var(--success-color);
+            cursor: pointer;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        .checklist-item.completed {
+            text-decoration: line-through;
+            color: #888;
+            background-color: #e8f5e9;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .reset-btn:hover {
+            background-color: #c0392b;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.4rem; }
+            .checklist-item { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <p class="lead">الحقيبة السابعة :  المهمة الاولى</p>
+        <p class="lead">المدرب : أ.د. علي عبد الزهرة الفحام</p>
+        <p class="lead">المتدرب : هاشم علي هاشم العوادي</p>
+        <h1>نظام ضبط القبول في الدراسات العليا</h1>
+        <p>قوائم الفحص للتدقيق من التقديم حتى الأمر الجامعي</p>
+    </header>
+
+    <div class="progress-container">
+        <div class="container" style="margin: 0 auto; padding: 0;">
+            <div class="progress-label">
+                <span>نسبة الإنجاز الكلية</span>
+                <span id="progress-text">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        
+        <section class="stage-card">
+            <h2 class="stage-title">📌 المرحلة الأولى: التقديم والتدقيق الأولي</h2>
+            <div id="stage1-list">
+                </div>
+        </section>
+
+        <section class="stage-card" style="border-right-color: #f39c12;">
+            <h2 class="stage-title">⚖️ المرحلة الثانية: الامتحان التنافسي والمفاضلة</h2>
+            <div id="stage2-list"></div>
+        </section>
+
+        <section class="stage-card" style="border-right-color: #8e44ad;">
+            <h2 class="stage-title">📂 المرحلة الثالثة: متطلبات القبول النهائي</h2>
+            <div id="stage3-list"></div>
+        </section>
+
+        <section class="stage-card" style="border-right-color: #27ae60;">
+            <h2 class="stage-title">🎓 المرحلة الرابعة: صدور الأمر الجامعي</h2>
+            <div id="stage4-list"></div>
+        </section>
+
+        <div style="text-align: center;">
+            <button class="reset-btn" onclick="resetChecklist()">إعادة تعيين القائمة ومسح البيانات</button>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>تم التصميم بناءً على التوجيهات الإدارية لضبط الجودة &copy; 2024</p>
+    </footer>
+
+    <script>
+        // بيانات القوائم (يمكنك تعديل النصوص هنا بسهولة)
+        const stagesData = {
+            stage1: [
+                "استلام استمارة التقديم الإلكترونية",
+                "تدقيق وثائق التخرج وكشف الدرجات",
+                "التحقق من صحة صدور الوثائق",
+                "استلام المستمسكات الثبوتية (الهوية، السكن)",
+                "استيفاء أجور التقديم المحددة",
+                "التأكد من عدم وجود محكومية أو قيد جنائي (التصريح الأمني)"
+            ],
+            stage2: [
+                "إعداد قوائم المشاركين في الامتحان التنافسي",
+                "إجراء الامتحان التنافسي وتصحيح الدفاتر",
+                "إجراء المقابلة العلمية للمتقدمين",
+                "احتساب معدل المفاضلة (المعدل + الامتحان + المقابلة)",
+                "فرز المقبولين (النفقة الخاصة / العامة / الامتيازات)",
+                "مصادقة مجلس القسم ومجلس الكلية على النتائج"
+            ],
+            stage3: [
+                "إعلان أسماء المقبولين أولياً للاعتراضات",
+                "النظر في الاعتراضات (إن وجدت)",
+                "إحضار الكفالة الضامنة (لطلبة النفقة الخاصة)",
+                "توقيع التعهدات الخطية للطالب",
+                "إكمال الفحص الطبي للمقبولين"
+            ],
+            stage4: [
+                "رفع المحضر النهائي لرئاسة الجامعة",
+                "تدقيق الأسماء في قسم الدراسات العليا بالرئاسة",
+                "صياغة الأمر الجامعي بالقبول",
+                "توقيع الأمر الجامعي من رئيس الجامعة",
+                "تعميم الأمر الجامعي على الكليات والجهات ذات العلاقة"
+            ]
+        };
+
+        // دالة لتهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', () => {
+            renderChecklists();
+            loadProgress();
+        });
+
+        // دالة رسم العناصر في الصفحة
+        function renderChecklists() {
+            for (const [stageId, items] of Object.entries(stagesData)) {
+                const container = document.getElementById(`${stageId}-list`);
+                items.forEach((item, index) => {
+                    const uniqueId = `${stageId}_item_${index}`;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'checklist-item';
+                    div.innerHTML = `
+                        <input type="checkbox" id="${uniqueId}" onchange="toggleItem('${uniqueId}')">
+                        <label for="${uniqueId}">${item}</label>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        // دالة التفاعل عند الضغط على مربع اختيار
+        function toggleItem(id) {
+            const checkbox = document.getElementById(id);
+            const parent = checkbox.parentElement;
+            
+            if (checkbox.checked) {
+                parent.classList.add('completed');
+            } else {
+                parent.classList.remove('completed');
+            }
+            
+            saveProgress();
+            calculateProgress();
+        }
+
+        // حساب نسبة التقدم
+        function calculateProgress() {
+            const total = document.querySelectorAll('input[type="checkbox"]').length;
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            
+            const percentage = total === 0 ? 0 : Math.round((checked / total) * 100);
+            
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').innerText = `${percentage}%`;
+            
+            if (percentage === 100) {
+                document.getElementById('progress-bar').style.backgroundColor = "#2ecc71";
+                document.getElementById('progress-bar').innerText = "تم الاكتمال!";
+            }
+        }
+
+        // حفظ البيانات في المتصفح
+        function saveProgress() {
+            const checkedItems = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(box => {
+                checkedItems.push(box.id);
+            });
+            localStorage.setItem('gradAdmissionsProgress', JSON.stringify(checkedItems));
+        }
+
+        // استرجاع البيانات المحفوظة
+        function loadProgress() {
+            const savedData = JSON.parse(localStorage.getItem('gradAdmissionsProgress'));
+            if (savedData) {
+                savedData.forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        checkbox.parentElement.classList.add('completed');
+                    }
+                });
+            }
+            calculateProgress();
+        }
+
+        // إعادة تعيين الكل
+        function resetChecklist() {
+            if(confirm("هل أنت متأكد من مسح جميع البيانات والبدء من جديد؟")) {
+                localStorage.removeItem('gradAdmissionsProgress');
+                document.querySelectorAll('input[type="checkbox"]').forEach(box => {
+                    box.checked = false;
+                    box.parentElement.classList.remove('completed');
+                });
+                calculateProgress();
+            }
+        }
+    </script>
+</body>
+</html>
